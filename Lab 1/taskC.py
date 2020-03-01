@@ -6,6 +6,7 @@ Created on Wed Feb 26 11:40:28 2020
 """
 from sudoku import Sudoku
 from CryptoGame import CryptoGame
+from GeoForms import GeoForms
 class taskC:
     
     def __init__(self):
@@ -13,16 +14,19 @@ class taskC:
         
     def __sudoku(self):
         attempts=int(input())
-        self.__game = Sudoku(attempts)
+        filename=input()
+        self.__game = Sudoku(attempts,filename)
         result = self.__game.trySolve()
         if result is None: 
             print("No possible solution found in the given attempts")
         else: 
-            print(result)
+            for line in result: 
+                print(line)
             
     def __crypt(self):
         attempts=int(input())
-        self.__game = CryptoGame(attempts)
+        filename=input()
+        self.__game = CryptoGame(attempts,filename)
         result = self.__game.trySolve()
         if result is None: 
             print("No possible solution found in the given attempts")
@@ -30,7 +34,15 @@ class taskC:
             print(result)
     
     def __geom(self):
-        pass
+        attempts=int(input())
+        self.__game = GeoForms(attempts)
+        result = self.__game.trySolve()
+        if result is None: 
+            print("No possible solution found in the given attempts")
+        else: 
+            for form in result:               
+                print(form)
+                #print("\n\n")
     
     def menu(self):
         while True:
@@ -40,6 +52,8 @@ class taskC:
                 self.__sudoku()
             elif cmd=="2":
                 self.__crypt()
+            elif cmd=="3":
+                self.__geom()
             elif cmd=="stop":
                 return
             else:

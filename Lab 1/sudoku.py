@@ -1,13 +1,13 @@
 import random
 
 class Sudoku:
-    def __init__(self, attempts):
+    def __init__(self, attempts, filename):
         self.__attempts = attempts
-        self.__board = self.__read()
+        self.__board = self.__read(filename)
         
-    def __read(self):
+    def __read(self,filename):
         board = []
-        with open("sudoku.txt",'r') as fin:
+        with open(filename,'r') as fin:
             for line in fin:
                 lineNrs=[]
                 for nr in line.split(' '): 
