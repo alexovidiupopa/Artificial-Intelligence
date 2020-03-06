@@ -28,6 +28,7 @@ class Sudoku:
             copy.append(row)
         return copy
     
+    
     def __check_sudoku(self,board) :
         numbers = set(range(1, len(board) + 1)) #1...n
         if (any(set(row) != numbers for row in board) or

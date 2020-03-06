@@ -50,7 +50,7 @@ class GeoForms:
             viz=[(x,y)]
             path=self.__forms[k]
             newPath=""
-            rotate=random.randint(0,3)
+            rotate=random.randint(0,1)
             for ch in path: 
                 c = ch
                 for i in range(rotate):
@@ -73,5 +73,6 @@ class GeoForms:
         for i in range(self.__attempts):
             potential,result = self.__solve()
             if self.__check(potential):
+                print(i)
                 return result
         return None
