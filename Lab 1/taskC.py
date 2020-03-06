@@ -42,7 +42,6 @@ class taskC:
         else: 
             for form in result:               
                 print(form)
-                #print("\n\n")
     
     def menu(self):
         while True:

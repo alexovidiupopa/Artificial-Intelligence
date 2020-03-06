@@ -1,5 +1,6 @@
 import random
-
+import math
+import itertools
 class Sudoku:
     def __init__(self, attempts, filename):
         self.__attempts = attempts
@@ -22,20 +23,43 @@ class Sudoku:
             row=[]
             for j in range(n):        
                 if self.__board[i][j]==0:
-                    row.append(random.randint(1,n))
+                    row.append(random.randint(1,n)) #put a random value on each empty space
                 else: 
                     row.append(self.__board[i][j])
             copy.append(row)
         return copy
     
-    
-    def __check_sudoku(self,board) :
-        numbers = set(range(1, len(board) + 1)) #1...n
-        if (any(set(row) != numbers for row in board) or
-            any(set(col) != numbers for col in zip(*board))) :
-            return False
+    def __checkLines(self, board, numbers):
+        for row in board: 
+            if set(row)!=numbers:
+                return False
         return True
     
+    def __checkCols(self, board, numbers):
+        for column in zip(*board):
+            if set(column)!=numbers:
+                return False
+        return True
+    
+    def __checkBoxes(self, board, numbers):
+        n=len(board)
+        sqn = int(math.sqrt(n))
+        for i in range(0,n,sqn):
+            for j in range(0,n,sqn):
+                elems=set()
+                for row in board[i:i+sqn]:
+                    for elem in row: 
+                        elems.add(elem)
+                if elems!=numbers:
+                    return False
+        return True
+    
+    def __check_sudoku(self,board):
+        numbers=set()
+        for i in range(1,len(board)+1):
+            numbers.add(i)
+        return self.__checkCols(board, numbers) and self.__checkLines(board, numbers) and self.__checkBoxes(board, numbers)
+        
     def trySolve(self):
         for i in range(self.__attempts):
             potential=self.__solve()
