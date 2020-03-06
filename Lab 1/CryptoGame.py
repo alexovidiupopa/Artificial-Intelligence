@@ -34,26 +34,31 @@ class CryptoGame:
             hexa*=16
         return value
     
-    def __check(self):
+    def __checkZerosFirstLetters(self):
         if self.__letters[self.__first[0]] == 0 or self.__letters[self.__second[0]] == 0 or self.__letters[self.__result[0]] == 0: 
-            return False
+            return False #if any letter which is the first in a word has value 0=> fail
+        return True
+
+    def __check(self):
         first = self.__buildValue(self.__first)
         second = self.__buildValue(self.__second)
         result = self.__buildValue(self.__result)
         if self.__sign == "+":
-            return first+second==result 
+            return first+second==result and self.__checkZerosFirstLetters() 
         elif self.__sign=="-":
-            return first-second==result
-        
+            return first-second==result and self.__checkZerosFirstLetters()
+        elif self.__sign=="*":
+            return first*second==result and self.__checkZerosFirstLetters()
         
     def __toHexa(self):    
         hexa = {0:"0", 1:"1",2:"2",3:"3",4:"4",5:"5",6:"6",7:"7",8:"8",9:"9",10:"A",11:"B",12:"C",13:"D",14:"E",15:"F"}
         for letter in self.__letters.keys():
             self.__letters[letter] = hexa[self.__letters[letter]]
         return self.__letters
+    
     def __solve(self):
         for letter in self.__letters.keys():
-            self.__letters[letter] = random.randint(0,15) #generate a random value for each letter
+            self.__letters[letter] = random.randint(0,15) #generate a random hexa value for each letter
         
     def trySolve(self):
         for i in range(self.__attempts):

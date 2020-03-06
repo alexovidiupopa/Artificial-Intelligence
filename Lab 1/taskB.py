@@ -12,16 +12,17 @@ class TaskB:
     def __init__(self):
         pass
         
-    def __read(self):
+    def __unif(self):
         a=int(input())
-        b=int(input())
+        b=int(input()) #interval [a,b]
         s = np.random.uniform(a,b,100)
         plt.plot(s, 'ro')
         plt.title('Uniform random numbers')
         plt.show()
         
     def __bino(self):
-        n, p = 20, .5  # number of trials, probability of each trial
+        n=int(input())
+        p=float(input())  # number of trials, probability of each trial
         s = np.random.binomial(n, p, 100)
         plt.plot(s,'bo')
         plt.title('Bino distribution')
@@ -38,8 +39,8 @@ class TaskB:
         while True:
             print(">>")
             cmd=input()
-            if cmd=="read":
-                self.__read()
+            if cmd=="unif":
+                self.__unif()
             elif cmd=="bino":
                 self.__bino()
             elif cmd=="normal":
