@@ -21,8 +21,7 @@ class UserInterface:
             print(solution)
 
     def run(self):
-        print("Please input the number of queens:")
-        n = int(input())
+        n = int(input("Please input the number of queens:"))
         self.__ctrl = Controller(n)
         while True:
             print("Select desired method (dfs/greedy) or exit to stop execution")

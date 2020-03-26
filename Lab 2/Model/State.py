@@ -30,7 +30,7 @@ class State:
         nextStates = []
         for i in range(self.__n):
             for j in range(self.__n):
-                if self.__values[i][j]!=1 and self.canPlacePiece(i,j):
+                if self.__values[i][j]!=1 and self.canPlacePiece(i,j): #check if we can put a piece on the current spot
                     newBoard = deepcopy(self.__values) #we need to deepcopy in order to avoid any issues caused by reference modifications
                     newBoard[i][j]=1
                     newState = State(self.__n)
@@ -49,7 +49,7 @@ class State:
     def validBoard(self):
         for i in range(self.__n):
             for j in range(self.__n):
-                if self.__values[i][j]==1 and not self.canPlacePiece(i,j):
+                if self.__values[i][j]==1 and not self.canPlacePiece(i,j): #check if a currently placed queen attacks other queens
                         return False
         return True
     

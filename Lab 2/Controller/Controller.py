@@ -5,9 +5,7 @@ from copy import deepcopy
 class Controller:
     
     def __init__(self,n):
-        self.__instance = State(n)
         self.__root = State(n)
-        self.__problem = Problem()
         
     def dfs(self):
         stack = [deepcopy(self.__root)]
@@ -26,12 +24,12 @@ class Controller:
         return solutions
     
     @staticmethod
-    def order_states(states):
-        return sorted(states, key=lambda state: Problem.heuristic(state), reverse=True)
+    def order_states(states): #use the heuristic function to sort a list of states
+        return sorted(states, key=lambda st: Problem.heuristic(st), reverse=True)
       
     def greedy(self):
-        queue = [deepcopy(self.__root)]
-        visited=[]
+        queue = [deepcopy(self.__root)] #queue that imitates a Priority Queue 
+        visited=[] #don't explore a solution more than once
         while queue!=[]:
             current = queue.pop(0)
             if current not in visited:
