@@ -12,6 +12,9 @@ from statistics import mean, stdev
 from qtpy.QtCore import QThread
 from PyQt5.QtCore import pyqtSignal
 
+"""
+use qthread to send values at each 100th iteration back to the main thread
+"""
 class EAStats(QThread):
     signal = pyqtSignal('PyQt_PyObject')
      

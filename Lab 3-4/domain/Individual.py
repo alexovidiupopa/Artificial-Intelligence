@@ -10,6 +10,9 @@ import itertools
 import copy
 from domain.Pair import Pair
 
+"""
+problem representation class to be used in HillClimbing and Evolutionary algorithms
+"""
 class Individual: 
     
     def __init__(self, size):
@@ -52,12 +55,19 @@ class Individual:
     def setLine(self, i, values):
         self.__cells[i] = values
     
+    """
+    by crossover in this case we can take line by line the values from the two parents, and add them to the children like this: 
+        -parent1_line to child1 and parent2_line to child2
+        OR 
+        -parent2_line to child1 and parent1_line to child2
+    this way we ensure that each child gets something from each of the two parents, at all times.
+    """
     def crossover(self, other, prob_cros):
         n=self.__size
         child1 = Individual(n)
         child2 = Individual(n)
         for i in range(n):
-            if prob_cros>random.random(): #set the lines into the two children combining the two parents
+            if prob_cros>random.random(): # deepcopy to avoid any reference issues
                 child1.setLine(i, copy.deepcopy(self.__cells[i]))
                 child2.setLine(i, copy.deepcopy(other.getLine(i)))
             else:

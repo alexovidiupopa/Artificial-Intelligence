@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 18 17:37:08 2020
+Created on Sat Mar 28 17:32:59 2020
 
 @author: Alex
 """
 
-"""
-helper class to hold the pair (sij, tij)
-"""
+
 
 class Pair: 
     
@@ -41,4 +39,3 @@ class Pair:
         
     def setSecond(self, y):
         self.__y = y
-        

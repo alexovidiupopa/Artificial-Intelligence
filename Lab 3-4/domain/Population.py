@@ -33,6 +33,10 @@ class Population:
         return sorted(self.__pop, key=lambda x: x.fitness())[:self.__pop_size]
 
     def iteration(self):
+        """
+        take two random parents and perform crossover to get two children
+        perform natural selection (i.e. sort and remove the two least fit from the population)
+        """
         i1 = randint(0, self.__pop_size-1)
         i2 = randint(0, self.__pop_size-1)
         if i1!=i2:
@@ -60,7 +64,8 @@ class PSOPopulation:
         return initial_pop[:]
     
     def getBest(self):
-        sorted(self.__pop, key=lambda x: x.fitness())
+        # sorted(self.__pop, key=lambda x: x.fitness())
+        self.__pop.sort(key=lambda x: x.fitness())
         return self.__pop[0]
     
     def selectNeighbours(self, size):
@@ -69,7 +74,7 @@ class PSOPopulation:
             neighbours+=p.getNeighbours(size)
         return neighbours 
     
-    def __sigmoidFunction(self, v): #compute the value of the sigmoid function for a given velocity 
+    def __sigmoidFunction(self, v): #compute the value of the sigmoid function for a given velocity (i.e. s(v ij) from the lecture pdf)
         return exp(-np.logaddexp(0, -v)) 
     
     def __manhattanDistance(self, line1, line2):
@@ -79,6 +84,10 @@ class PSOPopulation:
         return dist
     
     def iteration(self, neighbours, c1, c2, w):
+        
+        """
+        get best neighbours so far 
+        """
         bestneigh=[]
         for i in range(len(self.__pop)):
             bestneigh.append(neighbours[0])
@@ -86,6 +95,9 @@ class PSOPopulation:
                 if bestneigh[i].fitness()<neighbours[j].fitness():
                     bestneigh[i]=neighbours[j]
         
+        """
+        compute new velocities for each x and y in (x,y) (i.e. values from S and T respectively)
+        """
         for i in range(len(self.__pop)):
             for j in range(len(self.__pop[0].getVelocity())):
                 newVelocityS = w * self.__pop[i].getVelocity()[j][0] \
@@ -97,7 +109,9 @@ class PSOPopulation:
                 self.__pop[i].getVelocity()[j][0] = newVelocityS
                 self.__pop[i].getVelocity()[j][1] = newVelocityT
         
-        
+        """
+        change the values from S/T if the value given by the sigmoid function for the velocity > random nr (t) in [0,1]
+        """
         for i in range(len(self.__pop)):
             for j in range(len(self.__pop[0].getVelocity())):
                 if random() < self.__sigmoidFunction(self.__pop[i].getVelocity()[j][0]):
