@@ -38,9 +38,6 @@ class Controller:
     def getQ0(self):
         return self.__q0
     
-    def iteration(self): 
-        pass
-    
     def run(self): 
         pass 
     
@@ -64,28 +61,29 @@ class Controller:
             line = file.readline().strip()
             self.__q0 = float(line.replace("q0:", ""))
             
-    def epoch(self, pheromoneMatrix):
+    def epoch(self, pheromoneMatrices):
         population = []
         for i in range(self.__noAnts):
             ant = Ant(self.__problem)
             population.append(ant)
 
-        for i in range(self.__problem.getNumberOfTasks() - 1):
-            for ant in population:
-                ant.update(pheromoneMatrix, self.__alpha, self.__beta, self.__q0)
+        for i in range(2 * self.__problem.getSize() ** 2):
+            for j in range(len(population)): #foreach ant
+                population[j].update(pheromoneMatrices[j], self.__alpha, self.__beta, self.__q0) 
 
         t = [1.0 / population[i].fitness() for i in range(len(population))]
 
-        for i in range(self.__problem.getNumberOfComputers()):
-            for j in range(self.__problem.getNumberOfTasks()):
-                pheromoneMatrix[i][j] = (1 - self.__rho) * pheromoneMatrix[i][j]
+        for k in range(len(population)):
+            for i in range(self.__problem.getNumberOfComputers()):
+                for j in range(self.__problem.getNumberOfTasks()):
+                    pheromoneMatrices[k][i][j] = (1 - self.__rho) * pheromoneMatrices[k][i][j]
 
         for i in range(len(population)):
             for j in range(len(population[i].getPath()) - 1):
                 x = population[i].getPath()[j]
                 y = population[i].getPath()[j + 1]
 
-                pheromoneMatrix[x][y] = pheromoneMatrix[x][y] + t[i]
+                pheromoneMatrices[i][x][y] = pheromoneMatrices[i][x][y] + t[i]
         fitness = [[population[i].fitness(), i] for i in range(len(population))]
         fitness = min(fitness)
         return population[fitness[1]]

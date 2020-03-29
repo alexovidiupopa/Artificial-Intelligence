@@ -6,6 +6,8 @@ Created on Fri Mar 27 21:27:58 2020
 """
 
 from random import randint, random, choice
+from copy import deepcopy
+from Pair import Pair
 
 class Ant: 
     
@@ -13,6 +15,9 @@ class Ant:
         self.__problem = problem 
         self.__pathSize = (problem.getSize() ** 2) * 2 
         self.__path = [randint(1,problem.getSize())]
+        self.__initialGraph = randint(0,2* problem.getSize()-1)
+        self.__visited = [(self.__initialGraph, self.__path[0])]  
+        self.__graphs = self.__problem.getGraphs()
         
     def getPath(self): 
         return self.__path 
@@ -23,9 +28,39 @@ class Ant:
     def distance(self, next):
         return 1
     
+    def nextMoves(self, pos): 
+        moves = []
+        
+        
+        return moves
     
-    def update(self, traceMatrix, alpha, beta, q0):
-        pass
+    def update(self, pheromoneMatrices, alpha, beta, q0):
+        #can't update anymore
+        p = [0 for i in range(self.__problem.getNumberOfTasks())]
+        nextMoves = self.nextMoves()
+
+        for i in nextMoves:
+            p[i] = self.distance(i)
+            
+        r = [(p[i] ** beta) * (pheromoneMatrices[self.__path[-1]][i] ** alpha) for i in range(len(p))]
+        rnd1 = random()
+        if rnd1 < q0:
+            r = [[i, p[i]] for i in range(len(p))]
+            r = max(r, key=lambda a: a[1])
+            self.__path.append(r[0])
+        else:
+            s = sum(p)
+            if s == 0:
+                self.__path.append(choice(nextMoves))
+            p = [p[i] / s for i in range(len(p))]
+            p = [sum(p[0: i + 1]) for i in range(len(p))]
+            rnd2 = random()
+            i = 0
+            while rnd2 > p[i]:
+                i += 1
+            self.__path.append(i)
+        return True
+        
     
     def __wrongColumns(self, path):
         count=0
@@ -47,8 +82,16 @@ class Ant:
                 matrix.add(path[i][j])
         return self.__problem.getSize() ** 2 - len(matrix)
     
-    def __compressPath(self, path): 
-        pass 
+    def __compressPath(self): 
+        path = deepcopy(self.__path)
+        compressed = []
+        line = []
+        for i in range(0,len(path),2):
+            line.append(Pair(path[i],path[i+1]))
+            if len(line)%self.__problem.getSize()==0:
+                compressed.append(line)
+                line=[]
+        return compressed
     
     def fitness(self):
         pathAsMatrix = self.__compressPath()
