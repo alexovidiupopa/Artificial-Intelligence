@@ -10,7 +10,6 @@ from Ant import Ant
 class Controller: 
     
     def __init__(self, fileName, problem): 
-        self.params_file = fileName
         self.__problem = problem
         self.__noEpoch = 0
         self.__noAnts = 0
@@ -18,31 +17,11 @@ class Controller:
         self.__beta = 0.0
         self.__rho = 0.0
         self.__q0 = 0.0
-        self.loadParameters()
-        
-    def getNoEpoch(self):
-        return self.__noEpoch
-
-    def getNoAnts(self):
-        return self.__noAnts
-
-    def getAlpha(self):
-        return self.__alpha
-
-    def getBeta(self):
-        return self.__beta
-
-    def getRho(self):
-        return self.__rho
-
-    def getQ0(self):
-        return self.__q0
-    
-    def run(self): 
-        pass 
-    
-    def loadParameters(self):
-        with open(self.params_file, 'r') as file:
+        self.__pheromoneMatrices = [[[0 for i in range(problem.getSize())] for k in range(problem.getSize())] for j in range(2*problem.getSize())]
+        self.__loadParameters(fileName)
+  
+    def __loadParameters(self, fileName):
+        with open(fileName, 'r') as file:
             line = file.readline().strip()
             self.__noEpoch = int(line.replace("number of epoch:", ""))
 
@@ -61,29 +40,48 @@ class Controller:
             line = file.readline().strip()
             self.__q0 = float(line.replace("q0:", ""))
             
-    def epoch(self, pheromoneMatrices):
+    def __epoch(self):
+        # init ants 
         population = []
         for i in range(self.__noAnts):
             ant = Ant(self.__problem)
             population.append(ant)
 
-        for i in range(2 * self.__problem.getSize() ** 2):
-            for j in range(len(population)): #foreach ant
-                population[j].update(pheromoneMatrices[j], self.__alpha, self.__beta, self.__q0) 
+        # a path is complete when it has 2 n^2 elements (so it forms a nxn matrix of pairs)
+        for i in range(2 * (self.__problem.getSize() ** 2)):
+            for ant in population:  # for each ant, update 2n^2 times 
+                ant.update(self.__pheromoneMatrices[i//self.__problem.getSize()], self.__alpha, self.__beta, self.__q0)  # trick to know which matrix i'm in
+        
+        # we need fitness+1 in case our fitness reaches 0 to avoid division by 0
+        t = [1.0 / (population[i].fitness()+1) for i in range(len(population))]
 
-        t = [1.0 / population[i].fitness() for i in range(len(population))]
-
-        for k in range(len(population)):
-            for i in range(self.__problem.getNumberOfComputers()):
-                for j in range(self.__problem.getNumberOfTasks()):
-                    pheromoneMatrices[k][i][j] = (1 - self.__rho) * pheromoneMatrices[k][i][j]
-
-        for i in range(len(population)):
-            for j in range(len(population[i].getPath()) - 1):
-                x = population[i].getPath()[j]
-                y = population[i].getPath()[j + 1]
-
-                pheromoneMatrices[i][x][y] = pheromoneMatrices[i][x][y] + t[i]
-        fitness = [[population[i].fitness(), i] for i in range(len(population))]
+        # pheromone vaporization for each matrix (i.e. 2n matrices)
+        for k in range(2* self.__problem.getSize()):
+            for i in range(self.__problem.getSize()):
+                for j in range(self.__problem.getSize()):
+                    self.__pheromoneMatrices[k][i][j] = (1 - self.__rho) * self.__pheromoneMatrices[k][i][j]
+    
+        # update matrix with the trace left by this epochs ants
+        for ant in range(self.__noAnts): 
+            for graph in range(2*self.__problem.getSize()): 
+                path = population[ant].getPartOfPath(graph)
+                for i in range(1, self.__problem.getSize()):
+                    first = path[i-1]
+                    second = path[i]
+                    self.__pheromoneMatrices[graph][first][second] = self.__pheromoneMatrices[graph][first][second] + t[ant] 
+        
+        # return most fit ant (substract the 1 previously added)
+        fitness = [[population[i].fitness()-1, i] for i in range(len(population))]
         fitness = min(fitness)
         return population[fitness[1]]
+
+    def runAlgorithm(self):
+        solution = None
+        best_ant = None
+        for i in range(self.__noEpoch):
+            solution = self.__epoch()
+            if best_ant == None:
+                best_ant = solution
+            elif solution.fitness() < best_ant.fitness():
+                best_ant = solution
+        return (best_ant, best_ant.fitness())
