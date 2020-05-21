@@ -1,15 +1,26 @@
 Proposed Solution Description - MAMDANI model for the Washing Machine problem
 
-It generally represents an estimation of COA (centroid of area) by using a sample of n points, namely (xi,i = (1,2,3,4,5..n)
+The Mamdani model consists of the rule evaluations, namely, evaluation of consequence.
+It generally represents an estimation of COA (centroid of area) by using a sample of n points, namely (Pi,i = (1,2,...n), Pi = (xi, yi))
 
-The input parameters will be the texture and the capacity.
-For an input of texture=0, meaning very soft, and capacity=0.5, meaning medium, the output will be "easy"
+The problem data, namely the points from Fig7, Fig8 and Fig9 and the problem rules, namely Table3, can all be found in the data folder under their respective names.
 
-In this model, output variables belong to a fuzzy set. Therefore, result of evaluation is applied for the membership
-function of the consequence.
+Algorithm iterations
 
-The Madmani model consists of the rule evaluations, namely, evaluation of consequence.
+I. Texture = 0, capacity = 2.5
+  
+  1.Fuzzification
+  
+  
+  2. Set of points
+  Points = {(0.4,0.66), (0.6, 0.99), (0.8, 0.5), (1,1)}
+  
+  3. Defuzzification 
+  COA = (0.4 * 0.66 + 0.6*0.99 + 0.8*0.5 + 1) / (0.66+0.99+0.5+1) 
+      = (2.26) / (3.16)
+      = 0.72 = cycle value 
 
+II. 
 
 Alex-Ovidiu Popa 
 926

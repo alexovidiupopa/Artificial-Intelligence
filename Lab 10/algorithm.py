@@ -28,28 +28,35 @@ class Algorithm:
         c = values[2]
         result = max(0,
                      min((x - a) / (b - a),
+                         1,
                          (c - x) / (c - b)))
         return result
     
     def fuzzyTexture(self, x, values):
-        if x<0.2 and values == self.problem.texture['very soft']:
+        if x<0.2 and set(values) == set(self.problem.texture['very soft']):
             return 1.0
-        if x>0.9 and values == self.problem.texture['resistant']:
+        if x>0.9 and set(values) == set(self.problem.texture['resistant']):
             return 1.0
+        if(len(values)==3):
+            return self.fuzzyTriangle(x,values)
         return self.fuzzyTrapezium(x,values) 
     
     def fuzzyCapacity(self, x, values):
-        if x<1 and values == self.problem.capacity['small']:
+        if x<1 and set(values) == set(self.problem.capacity['small']):
             return 1.0
-        if x>4 and values == self.problem.capacity['high']:
+        if x>4 and set(values) == set(self.problem.capacity['high']):
             return 1.0
+        if(len(values)==4):
+            return self.fuzzyTrapezium(x,values)
         return self.fuzzyTriangle(x,values)
         
     def fuzzyCycle(self, x, values):
-        if x<0.2 and values == self.problem.cycle['delicate']:
+        if x<0.2 and set(values) == set(self.problem.cycle['delicate']):
             return 1.0
-        if x>0.9 and values == self.problem.cycle['intense']:
+        if x>0.9 and set(values) == set(self.problem.cycle['intense']):
             return 1.0
+        if(len(values)==3):
+            return self.fuzzyTriangle(x,values)
         return self.fuzzyTrapezium(x,values)
     
     
