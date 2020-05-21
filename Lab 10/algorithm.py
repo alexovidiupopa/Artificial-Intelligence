@@ -46,9 +46,9 @@ class Algorithm:
             return 1.0
         if x>4 and set(values) == set(self.problem.capacity['high']):
             return 1.0
-        if(len(values)==4):
-            return self.fuzzyTrapezium(x,values)
-        return self.fuzzyTriangle(x,values)
+        if(len(values)==3):
+            return self.fuzzyTriangle(x,values)
+        return self.fuzzyTrapezium(x,values)
         
     def fuzzyCycle(self, x, values):
         if x<0.2 and set(values) == set(self.problem.cycle['delicate']):
